@@ -28,12 +28,13 @@ int main(int argc,char* argv[]) {
    dn = (b-a)/n;
    for (i=1; i<=n; i++) {
        myfunatn1=evalmyfun((float)i/n*(b-a)+a);
-       trap = (myfunatn+myfunatn1)/2.0*dn;
+       trap = (myfunatn+myfunatn1);
        sum = trap + sum;
        myfunatn = myfunatn1;
    }
- 
-/* this is a "standart version with many myfun evaluations
+   sum = sum * 0.5 * dn;
+   
+/* this is a "standart version with many myfun evaluations (for 0 to 1)
 
    for (i=0; i<n; i++) {
        trap = (evalmyfun((float)i/n)+evalmyfun((i+1.0)/n))/2./n;
