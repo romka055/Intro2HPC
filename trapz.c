@@ -1,3 +1,5 @@
+// this is a serial version of the trapz integral code
+
 #include <stdio.h>
 
 float evalmyfun(float x) {
@@ -7,42 +9,33 @@ float evalmyfun(float x) {
 }
 
 int main(int argc,char* argv[]) {
-   int i,n;
-   float trap,sum,a,b,dn;
-   float myfunatn, myfunatn1;
+
+   unsigned long int i,n; // this was to make n very large over 1e9 to make the calculation run longer and see the effect of parallaliztion
+   double trap,sum,a,b,dn;
+   double myfunatn1;
+
+// intput arguments (i'm not chechking if N is an integra)
+   if (argc != 4) { 
+      printf("ERROR: enter [a b] and N\n");
+      return 1;
+   }
 
    n = atoi(argv[3]);  
    a = atoi(argv[1]);
    b = atoi(argv[2]);
 
-   if (n<1) {
-      printf("ERROR: enter [a b] and N\n");
-      return 1;
-   }
-
-   printf("This calculates the integral of 4/(1+x^2) over [%5.3f %5.3f] in %d steps !\n",a,b,n);
+   printf("This calculates the integral of 4/(1+x^2) over [%5.3f %5.3f] in %d steps \n",a,b,n);
    sum = 0.0f;
 
-// This is for less myfun evaluations but maybe not so good for parallelization 
-   myfunatn=evalmyfun(a);
-   dn = (b-a)/n;
-   for (i=1; i<=n; i++) {
-       myfunatn1=evalmyfun((float)i/n*(b-a)+a);
-       trap = (myfunatn+myfunatn1);
-       sum = trap + sum;
-       myfunatn = myfunatn1;
-   }
-   sum = sum * 0.5 * dn;
-   
-/* this is a "standart version with many myfun evaluations (for 0 to 1)
+   dn = (b-a)/n; // step size
 
-   for (i=0; i<n; i++) {
-       trap = (evalmyfun((float)i/n)+evalmyfun((i+1.0)/n))/2./n;
-       sum = trap + sum;
-   }
-*/
+    for (i=1; i<=(n-1); i++) {
+       myfunatn1=evalmyfun((double)i/n*(b-a)+a);
+       sum = sum + myfunatn1;
+    }
+   sum = (sum + (evalmyfun(a)+evalmyfun(b)) * 0.5) * dn;
+   printf("The result is %f and it was run as a serial code\n\n",sum);
 
-   printf("The result is %f\n",sum);   
    return 0;
 }
 
